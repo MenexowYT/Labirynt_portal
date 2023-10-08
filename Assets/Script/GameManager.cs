@@ -8,6 +8,12 @@ public class GameManager : MonoBehaviour
 	[SerializeField]
 	int timeToEnd;
 	bool isGamePaused = false;
+	bool endGame = false;
+	bool win = false;
+	public int points = 0;
+	public int redKey = 0,
+		greenKey = 0,
+		goldKey = 0;
 
 	private void Start()
 	{
@@ -23,6 +29,16 @@ public class GameManager : MonoBehaviour
 	{
 		timeToEnd--;
 		Debug.Log($"Time: {timeToEnd}s");
+
+		if(timeToEnd <=0)
+		{
+			timeToEnd = 0;
+			endGame = true;
+		}
+		if (endGame)
+		{
+			EndGame();
+		}
 	}
 
 	public void PauseGame()
@@ -54,4 +70,42 @@ public class GameManager : MonoBehaviour
 		Time.timeScale = 1f;
 		isGamePaused = false;
 	}
+
+	public void EndGame()
+	{
+		CancelInvoke("Stopper");
+		if(win)
+			Debug.Log("You win!");
+		else
+			Debug.Log("You lose!");
+	}
+
+	public void AddPoints(int points)
+	{
+		this.points += points;
+	}
+
+	public void	AddTime(int addTime)
+	{
+		timeToEnd += addTime;
+	}
+
+	public void FreezeTime(int freezeTime)
+	{
+		CancelInvoke("Stopper");
+		InvokeRepeating("Stopper", freezeTime, 1);
+	}
+
+	public void AddKey(KeyColor keyColor)
+	{
+		if (keyColor == KeyColor.Red)
+			redKey++;
+		else if (keyColor == KeyColor.Green)
+			greenKey++;
+		else if (keyColor == KeyColor.Gold)
+			goldKey++;
+		else
+			Debug.LogWarning("Incorrect key!");
+	}
 }
+
